@@ -7,7 +7,7 @@ import { UsersService } from '../users/users.service.js';
 import { LoginDto } from './dto/login-form.js';
 import { RegisterDto } from './dto/register-form.js';
 import jwt from 'jsonwebtoken';
-import { User } from '../schemas/user.schema.js';
+import { User } from '../users/schemas/user.schema.js';
 import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {

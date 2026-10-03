@@ -9,7 +9,7 @@ import { UpdateUserDto } from './dto/update-user.dto.js';
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../schemas/user.schema.js';
+import { User } from './schemas/user.schema.js';
 import { Model } from 'mongoose';
 
 @Injectable()
