@@ -1,16 +1,15 @@
 import {
   ConflictException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { readFile, writeFile } from 'fs/promises';
-import path from 'path';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema.js';
 import { Model } from 'mongoose';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -23,7 +22,12 @@ export class UsersService {
     if (oldUser) {
       throw new ConflictException('Username is already used');
     }
-    const createdUser = new this.userModel(createUserDto);
+
+    const hashedPwd = await bcrypt.hash(createUserDto.password, 10);
+    const createdUser = new this.userModel({
+      ...createUserDto,
+      password: hashedPwd,
+    });
     return createdUser.save();
   }
 
@@ -32,12 +36,11 @@ export class UsersService {
     return users;
   }
 
-  async findOne(username: string): Promise<User | null> {
+  async findOne(username: string): Promise<User> {
     const user = await this.userModel.findOne({ username }).lean().exec();
     if (!user) {
       throw new NotFoundException('User not exists');
     }
-    console.log(user);
     return user;
   }
 

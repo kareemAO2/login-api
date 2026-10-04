@@ -1,17 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { IsEmail } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class User {
-  @Prop()
+  @Prop({ required: true, type: String, unique: true })
   username: string;
 
-  @Prop()
+  @Prop({ required: true, type: String, unique: true })
   email: string;
 
-  @Prop()
+  @Prop({ required: true, type: String })
   password: string;
 }
 

@@ -9,6 +9,8 @@ import { RegisterDto } from './dto/register-form.js';
 import jwt from 'jsonwebtoken';
 import { User } from '../users/schemas/user.schema.js';
 import { ConfigService } from '@nestjs/config';
+import bcrypt from 'bcrypt';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -17,8 +19,11 @@ export class AuthService {
   ) {}
   async login(loginDto: LoginDto) {
     const user = await this.usersService.findOne(loginDto.username);
-    if (loginDto.password !== user?.password) {
-      throw new BadRequestException('Wrong password');
+
+    const compare = await bcrypt.compare(loginDto.password, user?.password);
+    if (!compare) {
+      console.log(compare, loginDto.password);
+      throw new ForbiddenException('Wrong password');
     }
 
     const secret = this.configService.get<string>('TOKEN_SECRET') as string;
@@ -32,10 +37,12 @@ export class AuthService {
     );
     return { user, token };
   }
+
   async register(registerDto: RegisterDto) {
     if (registerDto.password !== registerDto.confirmPassword) {
       throw new ForbiddenException("Confirm password doesn't match password");
     }
+
     const user = await this.usersService.create({
       username: registerDto.username,
       password: registerDto.password,
