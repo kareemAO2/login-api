@@ -11,6 +11,7 @@ import { ProfileModule } from './profile/profile.module.js';
   imports: [
     AuthModule,
     UsersModule,
+    ProfileModule,
     MongooseModule.forRoot('mongodb://localhost:27017/project'),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -18,7 +19,7 @@ import { ProfileModule } from './profile/profile.module.js';
     }),
     ProfileModule,
   ],
-  controllers: [AppController, ProfileController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
